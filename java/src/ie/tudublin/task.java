@@ -3,7 +3,7 @@ package ie.tudublin;
 import processing.data.TableRow;
 
 //Make a class called Task that encapsulates the columns from a single row from the tasks.csv file
-public class task {
+public class Task {
     
     //Make private fields and public accessor methods.
     private String name;
@@ -31,7 +31,7 @@ public class task {
     }
 
     //Make a constructor that takes initial values and assigns them to the fields.
-    public task(String name, int start, int end) {
+    public Task(String name, int start, int end) {
         this.name = name;
         this.start = start;
         this.end = end;
@@ -40,6 +40,11 @@ public class task {
     //Make a constructor that takes a Processing TableRow field as a parameter and make an appropriate toString method.
     public String toString() {
         return "\nTask : " + end + "\nName : " + name + "\nStart : " + start + "\n";
+    }
+    
+    public Task(TableRow tr)
+    {
+        this(tr.getString("Task"), tr.getInt("Start"), tr.getInt("End"));
     }
 
     
