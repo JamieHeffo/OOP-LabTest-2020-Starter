@@ -21,6 +21,9 @@ public class Gantt extends PApplet
 	public void settings()
 	{
 		size(800, 600);
+
+		loadTasks();
+		printTasks();
 	}
 
 	//Write a method called loadTasks that populates the ArrayList from the file tasks.csv
@@ -43,18 +46,66 @@ public class Gantt extends PApplet
 		}
 	}
 	
+	/*
+	Write code that allows a user to alter the start day and end day of a task by clicking and dragging on the start or end of a task with the mouse
+	(20 pixels after the start or 20 pixels before the end of the rectangle.
+	The user should not be able to set the start or end of the task beyond the range 1-30 and also
+	should not be able to set the duration to be less than 1.
+	*/
 	public void mousePressed()
 	{
-		println("Mouse pressed");	
+		for(int i = 0; i < tasks.size(); i++)
+		{
+			float y1 = (border + border + rowHeight * i) - 15;
+			float y2 = (border + border + rowHeight * i) + 15;
+
+			float x1 = map(tasks.get(i).getStart(), 1, maxMonths, namesPart, width - border);
+			float x2 = map(tasks.get(i).getEnd(), 1, maxMonths, namesPart, width - border);
+
+			if(mouseX >= x1 && mouseX <= x1 + 20 && mouseY >= y1 && mouseY <= y2)
+			{
+				whichTask = i;
+				isEnd = true;
+				return;
+			}
+
+			if(mouseX <= x2 && mouseX >= x2 - 20 && mouseY >= y1 && mouseY <= y2)
+			{
+				whichTask = i;
+				isEnd = true;
+				return;
+			}
+
+		}
+		//default value for whichtask
+		whichTask = -1;
 	}
 
 	public void mouseDragged()
 	{
-		println("Mouse dragged");
+		if (whichTask != -1)
+		{
+			int month = (int)map(mouseX, namesPart, width - border, 1, maxMonths);
+
+			if (month >= 1 && month <= maxMonths)
+			{
+				Task task = tasks.get(whichTask);
+				if(isEnd){
+					if(month - task.getStart() > 0){
+						task.setEnd(month);
+					}
+				}
+				else{
+					if(task.getEnd() - month > 0){
+						task.setStart(month);
+					}
+				}
+			}
+		}
 	}
 
 	//Write a method called displayTasks() that displays the tasks as in the video.
-	public void displayTasks()
+	void displayTasks()
 	{
 		textSize(14);
 		textAlign(LEFT, CENTER);
@@ -93,8 +144,7 @@ public class Gantt extends PApplet
 	public void setup() 
 	{
 		//Call these methods from setup()
-		loadTasks();
-		printTasks();
+		colorMode(HSB);
 	}
 	
 	public void draw()
